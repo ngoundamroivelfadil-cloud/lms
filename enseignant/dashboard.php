@@ -3,6 +3,7 @@ require_once '../includes/session.php';
 verifierRole('enseignant');
 require_once '../config/database.php';
 require_once '../includes/sidebar.php';
+require_once '../includes/topbar.php';
 
 $id = $_SESSION['user_id'];
 $nb_cours    = $conn->query("SELECT COUNT(*) n FROM cours WHERE id_enseignant=$id")->fetch_assoc()['n'];
