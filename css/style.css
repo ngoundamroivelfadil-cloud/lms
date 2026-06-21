@@ -229,9 +229,50 @@ a { text-decoration: none; color: inherit; }
     align-items: center;
 }
 
-/* COMMENT FLUX */
-.comment-list {
-    margin-top: 15px;
+/* TOPBAR RESPONSIVE FIX */
+@media (max-width: 600px) {
+    .topbar {
+        padding: 5px 10px;
+        height: auto;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .topbar-left {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+    .topbar-right {
+        width: 100%;
+        justify-content: flex-end;
+    }
+    .topbar-search {
+        max-width: 150px;
+        font-size: 0.8rem;
+    }
+    .topbar-search input {
+        padding: 6px 10px 6px 30px;
+    }
+}
+
+/* INTEGRATED PDF VIEWER */
+.material-preview {
+    margin-top: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: #525659; /* Gray background for PDF viewer */
+    overflow: hidden;
+    height: 600px;
+    width: 100%;
+}
+
+.material-preview iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+@media (max-width: 768px) {
+    .material-preview { height: 450px; }
 }
 
 .comment-item {

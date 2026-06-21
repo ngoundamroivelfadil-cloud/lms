@@ -44,6 +44,14 @@ if(isset($_POST['ajouter_commentaire']) && $lecon){
     }
 }
 
+// Convertir URL YouTube en embed
+if(!function_exists('youtubeEmbed')){
+    function youtubeEmbed($url){
+        preg_match('/(?:v=|youtu\.be\/)([^&\s]+)/',$url,$m);
+        return isset($m[1])?"https://www.youtube.com/embed/{$m[1]}":$url;
+    }
+}
+
 // Index leçon active
 $idx_active=0;
 if($lecon){foreach($lecons as $k=>$l){if($l['id']==$lecon['id']){$idx_active=$k;break;}}}
@@ -96,8 +104,26 @@ if($lecon){foreach($lecons as $k=>$l){if($l['id']==$lecon['id']){$idx_active=$k;
                             <?=nl2br(sanitize($lecon['description']??''))?>
                         </div>
 
-                        <div class="material-attachments">
-                            <h3>Pièces jointes</h3>
+                        <!-- LECTEUR INTÉGRÉ (Pour rester sur la plateforme) -->
+                        <?php if($lecon['type_contenu']==='pdf' && $lecon['fichier_pdf']): ?>
+                        <div class="material-preview">
+                            <iframe src="<?=sanitize($lecon['fichier_pdf'])?>#toolbar=0" allow="autoplay"></iframe>
+                        </div>
+                        <?php elseif($lecon['type_contenu']==='video_url' && $lecon['video_url']): ?>
+                        <div class="material-preview">
+                            <iframe src="<?=youtubeEmbed(sanitize($lecon['video_url']))?>" allowfullscreen></iframe>
+                        </div>
+                        <?php elseif($lecon['type_contenu']==='video_fichier' && $lecon['video_fichier']): ?>
+                        <div class="material-preview" style="background:#000;">
+                            <video controls style="width:100%; height:100%;">
+                                <source src="<?=sanitize($lecon['video_fichier'])?>" type="video/mp4">
+                                Votre navigateur ne supporte pas la lecture de vidéos.
+                            </video>
+                        </div>
+                        <?php endif; ?>
+
+                        <div class="material-attachments" style="margin-top:30px;">
+                            <h3>Téléchargements et liens</h3>
                             <div class="attachment-grid">
                                 <?php if($lecon['type_contenu']==='pdf' && $lecon['fichier_pdf']): ?>
                                 <a href="<?=sanitize($lecon['fichier_pdf'])?>" target="_blank" class="attachment-card">
