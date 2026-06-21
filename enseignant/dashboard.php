@@ -3,7 +3,37 @@ require_once '../includes/session.php';
 verifierRole('enseignant');
 require_once '../config/database.php';
 require_once '../includes/sidebar.php';
-require_once '../includes/topbar.php';
+
+// Definition directe de topbar au cas où l'inclusion échoue sur le serveur
+if (!function_exists('topbar')) {
+    function topbar($title = '', $subtitle = '', $base = '../') {
+        global $conn;
+        $id_user = $_SESSION['user_id'];
+        $nb_msg = 0;
+        if (function_exists('nbMessagesNonLus')) {
+            $nb_msg = nbMessagesNonLus($conn, $id_user);
+        }
+        ?>
+        <div class="topbar">
+            <div class="topbar-left">
+                <div class="topbar-title"><?= sanitize($title) ?></div>
+                <?php if($subtitle): ?><div class="topbar-sub"><?= sanitize($subtitle) ?></div><?php endif; ?>
+            </div>
+            <div class="topbar-right">
+                <div class="topbar-actions">
+                    <div class="theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-moon dark-only"></i><i class="fa-solid fa-sun light-only"></i></div>
+                    <div class="notif-bell" onclick="window.location.href='<?= $base ?>messagerie.php'">
+                        <i class="fa-solid fa-envelope"></i>
+                        <?php if($nb_msg > 0): ?><span class="notif-dot"></span><?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+} else {
+    require_once '../includes/topbar.php';
+}
 
 $id = $_SESSION['user_id'];
 $nb_cours    = $conn->query("SELECT COUNT(*) n FROM cours WHERE id_enseignant=$id")->fetch_assoc()['n'];
